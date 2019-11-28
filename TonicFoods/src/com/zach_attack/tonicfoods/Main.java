@@ -16,7 +16,8 @@ import com.zach_attack.tonicfoods.Utils.FResult;
 import com.zach_attack.tonicfoods.MetricsLite;
 
 public class Main extends JavaPlugin implements Listener {
-
+	public TonicFoodsAPI api;
+	
 	static String prefix = "&8[&aTonicFoods&8]&r";
 	private boolean sounds = true;
 	private boolean updatecheck = true;
@@ -27,6 +28,8 @@ public class Main extends JavaPlugin implements Listener {
 		if(!Bukkit.getBukkitVersion().contains("1.14")) {
 			getLogger().warning("THIS PLUGIN IS DESIGNED FOR 1.14.4 ONLY. It may not work for 1.13 or below!");
 		}
+		
+		api = new TonicFoodsAPI();
 		
 		getConfig().options().copyDefaults(true);
 		saveConfig();
@@ -254,6 +257,15 @@ public class Main extends JavaPlugin implements Listener {
    						Msgs.sendP(sender, "&c&lError. &fThe foods folder doesn't exist. &7Try reloading your plugin!");
    					} else if(r == FResult.DONE){
    						// All went well.
+   						
+   						// API EVENT
+   						TonicFoodGiveEvent fse = new TonicFoodGiveEvent(sender, target, amount, food);
+   						Bukkit.getPluginManager().callEvent(fse);
+   						if (fse.isCancelled()) {
+   							return true;
+   						}
+   						// END API EVENT 
+   						
    						pop(sender);
    						pop(target);
    						Msgs.sendP(sender, "&fGave " + target.getName() + " &7&l" + amount + "x &fof &7&l" + food);

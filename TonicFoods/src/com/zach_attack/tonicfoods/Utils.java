@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -261,6 +262,14 @@ public class Utils {
 					return;
 				}
 			}}
+			
+				// API EVENT
+				TonicFoodEatEvent fse = new TonicFoodEatEvent(p, i);
+				Bukkit.getPluginManager().callEvent(fse);
+				if (fse.isCancelled()) {
+					return;
+				}
+				// END API EVENT 
 
 			Potions.add(p, setfood.getString("Effect.Type"), setfood.getInt("Effect.Duration"), setfood.getInt("Effect.Power"));
 			
