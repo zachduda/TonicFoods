@@ -1,0 +1,16 @@
+name: TonicFoods
+main: com.zach_attack.tonicfoods.Main
+author: zach_attack
+version: 1.3
+api-version: 1.14
+permissions:
+   tonicfoods.admin:
+     description: Admin permission for TonicFoods
+     default: op
+   tonicfoods.give:
+     description: Permission to give players custom food.
+     default: op
+commands:
+  tonicfoods:
+    description: The main plugin command for the TonicFoods plugin.
+    aliases: [tf, tfood, tfoods]
