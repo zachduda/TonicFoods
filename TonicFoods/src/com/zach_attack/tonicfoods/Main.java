@@ -294,28 +294,20 @@ public class Main extends JavaPlugin implements Listener {
     
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onJoin(PlayerJoinEvent e) {
-		Player p = e.getPlayer();
-		
-		if(updatecheck) {
-		if(p.hasPermission("puuids.admin") || p.isOp()) {
-		if (Updater.outdated) {
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
-			  {
-			    public void run()
-			     {
-			    	try {
-			    		Msgs.sendP(p, "&c&lOutdated Plugin! &7Running v" + getDescription().getVersion()
+		Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+			Player p = e.getPlayer();
+			if(updatecheck) {
+				if(p.hasPermission("puuids.admin") || p.isOp()) {
+					if (Updater.outdated) {
+					    try {
+							Msgs.sendP(p, "&c&lOutdated Plugin! &7Running v" + getDescription().getVersion()
 							+ " while the latest is &f&l" + Updater.outdatedversion);
-			    		pop(p);
-			    	} catch (Exception err) {
-			    		sounds = false;
-			    	}
-			}}, 50L);
-		}}}
+						} catch (Exception err) {//Swallowing Errors, yum...
+		}}}}
 		
 		if (p.getUniqueId().toString().equals("6191ff85-e092-4e9a-94bd-63df409c2079")) {
 			Msgs.send(p, "&7This server is running &fTonicFoods &6v" + getDescription().getVersion()
 			+ " &7for " + Bukkit.getBukkitVersion().replace("-SNAPSHOT", ""));
 		}
-	}
+	});}
 }
