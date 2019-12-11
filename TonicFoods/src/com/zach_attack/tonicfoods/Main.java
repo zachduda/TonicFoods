@@ -24,9 +24,10 @@ public class Main extends JavaPlugin implements Listener {
 	private String popsound = "ENTITY_CHICKEN_EGG";
 	private String basssound = "BLOCK_NOTE_BLOCK_BASS";
 	
+	private String version = Bukkit.getBukkitVersion().toString().replace("-SNAPSHOT", "");
 	public void onEnable() {
-		if(!Bukkit.getBukkitVersion().contains("1.14")) {
-			getLogger().warning("THIS PLUGIN IS DESIGNED FOR 1.14.4 ONLY. It may not work for 1.13 or below!");
+		if(!version.contains("1.14") && !version.contains("1.15")) {
+			getLogger().warning("THIS PLUGIN IS DESIGNED FOR 1.14 & 1.15 ONLY. It may not work for 1.13 or below!");
 		}
 		
 		api = new TonicFoodsAPI();
