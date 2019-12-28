@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.zach_attack.tonicfoods.Utils.FResult;
+
 import com.zach_attack.tonicfoods.MetricsLite;
 
 public class Main extends JavaPlugin implements Listener {
@@ -23,10 +24,13 @@ public class Main extends JavaPlugin implements Listener {
     private boolean updatecheck = true;
     private String popsound = "ENTITY_CHICKEN_EGG";
     private String basssound = "BLOCK_NOTE_BLOCK_BASS";
-
+    
     private String version = Bukkit.getBukkitVersion().toString().replace("-SNAPSHOT", "");
+
+    public boolean isSupported = (version.contains("1.14") || version.contains("1.15")) ? true : false;
+    
     public void onEnable() {
-        if (!version.contains("1.14") && !version.contains("1.15")) {
+        if (!isSupported) {
             getLogger().warning("THIS PLUGIN IS DESIGNED FOR 1.14 & 1.15 ONLY. It may not work for 1.13 or below!");
         }
 
@@ -74,7 +78,7 @@ public class Main extends JavaPlugin implements Listener {
             try {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    p.playSound(p.getLocation(), Sound.valueOf(popsound), 2.0 F, 2.0 F);
+                    p.playSound(p.getLocation(), Sound.valueOf(popsound), 2.0F, 2.0F);
                 }
             } catch (Exception err) {
                 sounds = false;
@@ -88,7 +92,7 @@ public class Main extends JavaPlugin implements Listener {
             try {
                 if (sender instanceof Player) {
                     Player p = (Player) sender;
-                    p.playSound(p.getLocation(), Sound.valueOf(basssound), 2.0 F, 1.3 F);
+                    p.playSound(p.getLocation(), Sound.valueOf(basssound), 2.0F, 1.3F);
                 }
             } catch (Exception err) {
                 sounds = false;
@@ -294,7 +298,7 @@ public class Main extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent e) {
-        Bukkit.getScheduler().runTaskAsynchronously(this, () - > {
+        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
             Player p = e.getPlayer();
             if (updatecheck) {
                 if (p.hasPermission("puuids.admin") || p.isOp()) {
