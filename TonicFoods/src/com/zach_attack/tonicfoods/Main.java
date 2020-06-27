@@ -12,8 +12,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.zach_attack.tonicfoods.Utils.FResult;
-
+import com.zach_attack.tonicfoods.Utils.FoodResult;
 import com.zach_attack.tonicfoods.MetricsLite;
 
 public class Main extends JavaPlugin implements Listener {
@@ -25,17 +24,18 @@ public class Main extends JavaPlugin implements Listener {
     private String popsound = "ENTITY_CHICKEN_EGG";
     private String basssound = "BLOCK_NOTE_BLOCK_BASS";
     
-    private String version = Bukkit.getBukkitVersion().toString().replace("-SNAPSHOT", "");
+    private final String version = Bukkit.getBukkitVersion().toString().replace("-SNAPSHOT", "");
 
-    public boolean isSupported = (version.contains("1.14") || version.contains("1.15")) ? true : false;
+    private final boolean supported = (version.contains("1.14") || version.contains("1.15") || version.contains("1.16")) ? true : false;
     
     public void onEnable() {
-        if (!isSupported) {
-            getLogger().warning("THIS PLUGIN IS DESIGNED FOR 1.14 & 1.15 ONLY. It may not work for 1.13 or below!");
+    	if (!supported) {
+        	Bukkit.getScheduler().runTask(this, () -> {
+        		getLogger().warning("> This plugin may not work for this version of Minecraft. (Supports 1.16 through 1.14)");
+            });
         }
 
         api = new TonicFoodsAPI();
-
         getConfig().options().copyDefaults(true);
         saveConfig();
 
@@ -248,19 +248,19 @@ public class Main extends JavaPlugin implements Listener {
                         return true;
                     }
 
-                    FResult r = Utils.giveFood(target, food, amount);
+                    final FoodResult r = Utils.giveFood(target, food, amount);
 
-                    if (r == FResult.INVALID_FOOD) {
+                    if (r == FoodResult.INVALID_FOOD) {
                         bass(sender);
                         Msgs.sendP(sender, "&c&lError. &fThat food has an invalid type for a material/food.");
-                    } else if (r == FResult.NO_FOOD) {
+                    } else if (r == FoodResult.NO_FOOD) {
                         // This should NEVER happen, as .foodExists(food) should catch it.
                         Msgs.sendP(sender, "&c&lNot Found. &fThat food does not exist.");
                         bass(sender);
-                    } else if (r == FResult.NO_FOLDER) {
+                    } else if (r == FoodResult.NO_FOLDER) {
                         bass(sender);
                         Msgs.sendP(sender, "&c&lError. &fThe foods folder doesn't exist. &7Try reloading your plugin!");
-                    } else if (r == FResult.DONE) {
+                    } else if (r == FoodResult.DONE) {
                         // All went well.
 
                         // API EVENT

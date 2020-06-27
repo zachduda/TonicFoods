@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
-public class TonicFoodsAPI {
+import com.zach_attack.tonicfoods.Utils.FoodResult;
+
+public class TonicFoodsAPI {  
 	
-	public static Utils.FResult giveFood(Player p, String food, int amount) {
+	public static FoodResult giveFood(Player p, String food, int amount) {
 		return Utils.giveFood(p, food, amount);
 	}
 	

@@ -22,7 +22,7 @@ import com.zach_attack.tonicfoods.Main;
 public class Utils {
     private static Main plugin = Main.getPlugin(Main.class);
 
-    static enum FResult {
+    static enum FoodResult {
         NO_FOLDER,
         NO_FOOD,
         INVALID_FOOD,
@@ -71,17 +71,17 @@ public class Utils {
         }
     }
 
-    static FResult giveFood(Player p, String food, int amount) {
+    static FoodResult giveFood(Player p, String food, int amount) {
         File folder = new File(plugin.getDataFolder(), File.separator + "Foods");
 
         if (!folder.exists()) {
-            return FResult.NO_FOLDER;
+            return FoodResult.NO_FOLDER;
         }
 
         File f = new File(folder, File.separator + food.toUpperCase() + ".yml");
 
         if (!f.exists()) {
-            return FResult.NO_FOOD;
+            return FoodResult.NO_FOOD;
         }
 
         FileConfiguration setfood = YamlConfiguration.loadConfiguration(f);
@@ -91,7 +91,7 @@ public class Utils {
 
         if (itemtype == null) {
             plugin.getLogger().warning("Invalid Material/Food: " + setfood.getString("Item.Type").toUpperCase() + " (Found in file " + food.toUpperCase() + ".yml");
-            return FResult.INVALID_FOOD;
+            return FoodResult.INVALID_FOOD;
         }
 
         List < String > lore = setfood.getStringList("Item.Lore");
@@ -107,7 +107,7 @@ public class Utils {
             p.getInventory().addItem(item);
         }
 
-        return FResult.DONE;
+        return FoodResult.DONE;
     }
 
     static void generateExample() {
@@ -139,6 +139,7 @@ public class Utils {
         setfood.set("Permission.No-Permission-Msg", "None");
 
         setfood.set("Message", "None");
+        
         try {
             setfood.save(f);
         } catch (IOException e) {}
