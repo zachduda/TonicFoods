@@ -1,0 +1,11 @@
+Messages:
+  Prefix: '&8[&a&lT&f&lF&8]'
+  No-Permission: '&fYou do not have permission.'
+Settings:
+  Sounds:
+    Enabled: true
+    Pop: "ENTITY_CHICKEN_EGG"
+    Bass: "BLOCK_NOTE_BLOCK_BASS"
+  Other:
+    Metrics: true
+    Update-Check: true

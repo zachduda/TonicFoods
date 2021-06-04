@@ -1,0 +1,17 @@
+name: TonicFoods
+main: com.zachduda.tonicfoods.Main
+author: zach_attack
+version: 2.0
+api-version: 1.13
+description: Custom made food with potion effects, made easy!
+permissions:
+   tonicfoods.admin:
+     description: Admin permission for TonicFoods
+     default: op
+   tonicfoods.give:
+     description: Permission to give players custom food.
+     default: op
+commands:
+  tonicfoods:
+    description: The main plugin command for the TonicFoods plugin.
+    aliases: [tf, tfood, tfoods]
