@@ -17,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.google.common.io.Files;
-import com.zach_attack.tonicfoods.Main;
 
 public class Utils {
     private static Main plugin = Main.getPlugin(Main.class);

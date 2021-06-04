@@ -1,8 +1,8 @@
 name: TonicFoods
 main: com.zach_attack.tonicfoods.Main
 author: zach_attack
-version: 1.4.2
-api-version: 1.14
+version: 1.4.3
+api-version: 1.13
 permissions:
    tonicfoods.admin:
      description: Admin permission for TonicFoods
