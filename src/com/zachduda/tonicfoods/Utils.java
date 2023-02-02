@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import me.dave.chatcolorhandler.ChatColorHandler;
 import org.bukkit.Bukkit;
@@ -17,9 +18,23 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.google.common.io.Files;
 
 public class Utils {
-    private static Main plugin = Main.getPlugin(Main.class);
+    private static final Main plugin = Main.getPlugin(Main.class);
 
-    static enum FoodResult {
+
+    private static File getFolder(boolean update) {
+        if(folder == null || update) {
+            folder = new File(plugin.getDataFolder(), File.separator + "Foods");
+        }
+        return folder;
+    }
+
+    static void updateFoodFolder() {
+        getFolder(true);
+    }
+
+    private static File folder = getFolder(false);
+
+    enum FoodResult {
         NO_FOLDER,
         NO_FOOD,
         INVALID_FOOD,
@@ -27,36 +42,25 @@ public class Utils {
     }
 
     static boolean foodExists(String food) {
-        File folder = new File(plugin.getDataFolder(), File.separator + "Foods");
-
         if (!folder.exists()) {
             return false;
         }
 
         File f = new File(folder, File.separator + food.toUpperCase() + ".yml");
 
-        if (!f.exists()) {
-            return false;
-        }
-
-        return true;
+        return f.exists();
     }
 
     static void allFilesUppercase() {
-        File folder = new File(plugin.getDataFolder(), File.separator + "Foods");
-
         int renamed = 0;
 
-        for (File foodfile: folder.listFiles()) {
+        for (File foodfile: Objects.requireNonNull(folder.listFiles())) {
             String path = foodfile.getPath();
 
-            if (!Files.getFileExtension(path).equalsIgnoreCase("yml")) {
-                // NOT A VALID FILE
-            } else {
-
+            if (Files.getFileExtension(path).equalsIgnoreCase("yml")) {
                 File f = new File(path);
                 String name = Files.getNameWithoutExtension(f.getName());
-                if (name != name.toUpperCase()) {
+                if (!name.equals(name.toUpperCase())) {
                     f.renameTo(new File(folder, name.toUpperCase() + ".yml"));
                     renamed++;
                 }
@@ -69,8 +73,6 @@ public class Utils {
     }
 
     static FoodResult giveFood(Player p, String food, int amount) {
-        File folder = new File(plugin.getDataFolder(), File.separator + "Foods");
-
         if (!folder.exists()) {
             return FoodResult.NO_FOLDER;
         }
@@ -84,10 +86,10 @@ public class Utils {
         FileConfiguration setfood = YamlConfiguration.loadConfiguration(f);
 
         String itemname = convertColor(setfood.getString("Item.Name"));
-        Material itemtype = Material.getMaterial(setfood.getString("Item.Type").toUpperCase());
+        Material itemtype = Material.getMaterial(Objects.requireNonNull(setfood.getString("Item.Type")).toUpperCase());
 
         if (itemtype == null) {
-            plugin.getLogger().warning("Invalid Material/Food: " + setfood.getString("Item.Type").toUpperCase() + " (Found in file " + food.toUpperCase() + ".yml");
+            plugin.getLogger().warning("Invalid Material/Food: " + Objects.requireNonNull(setfood.getString("Item.Type")).toUpperCase() + " (Found in file " + food.toUpperCase() + ".yml");
             return FoodResult.INVALID_FOOD;
         }
 
@@ -95,6 +97,7 @@ public class Utils {
 
         ItemStack item = new ItemStack(itemtype);
         ItemMeta itemm = item.getItemMeta();
+        assert itemm != null;
         itemm.setDisplayName(itemname);
 
         itemm.setLore(convertListColor(lore));
@@ -108,8 +111,6 @@ public class Utils {
     }
 
     static void generateExample() {
-        File folder = new File(plugin.getDataFolder(), File.separator + "Foods");
-
         if (folder.exists()) {
             // Only generates on 1st run.
             return;
@@ -122,7 +123,7 @@ public class Utils {
         setfood.set("Item.Type", "COOKED_BEEF");
         setfood.set("Item.Name", "&c&l&o&nFancy Beef");
 
-        ArrayList < String > lore = new ArrayList < String > ();
+        ArrayList <String> lore = new ArrayList<>();
         lore.add("&7Only the best meat");
         lore.add("&7shall provide you with");
         lore.add("&f&lgreat &7strength.");
@@ -139,24 +140,21 @@ public class Utils {
         
         try {
             setfood.save(f);
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            plugin.getLogger().info("Error trying to create example food.yml: ");
+            e.printStackTrace();
+        }
 
         lore.clear();
     }
 
     static ArrayList < Material > getFoods() {
+        ArrayList < Material > foods = new ArrayList<>();
 
-        File folder = new File(plugin.getDataFolder(), File.separator + "Foods");
-
-        ArrayList < Material > foods = new ArrayList < Material > ();
-
-        for (File foodfile: folder.listFiles()) {
+        for (File foodfile: Objects.requireNonNull(folder.listFiles())) {
             String path = foodfile.getPath();
 
-            if (!Files.getFileExtension(path).equalsIgnoreCase("yml")) {
-                // NOT A VALID FILE
-            } else {
-
+            if (Files.getFileExtension(path).equalsIgnoreCase("yml")) {
                 File f = new File(path);
                 FileConfiguration setcache = YamlConfiguration.loadConfiguration(f);
                 foods.add(Material.getMaterial(setcache.getString("Item.Type")));
@@ -166,39 +164,28 @@ public class Utils {
     }
 
     static ArrayList < String > getFoodFileNames() {
-
-        File folder = new File(plugin.getDataFolder(), File.separator + "Foods");
-
         ArrayList < String > foods = new ArrayList < String > ();
 
-        for (File foodfile: folder.listFiles()) {
+        for (File foodfile: Objects.requireNonNull(folder.listFiles())) {
             String path = foodfile.getPath();
 
-            if (!Files.getFileExtension(path).equalsIgnoreCase("yml")) {
-                // NOT A VALID FILE
-            } else {
-
+            if (Files.getFileExtension(path).equalsIgnoreCase("yml")) {
                 File f = new File(path);
-                foods.add(Files.getNameWithoutExtension(f.getName().toString()));
+                foods.add(Files.getNameWithoutExtension(f.getName()));
             }
         }
         return foods;
     }
 
     static String foodTypeToFileName(Material food) {
-        File folder = new File(plugin.getDataFolder(), File.separator + "Foods");
-
-        for (File foodfile: folder.listFiles()) {
+        for (File foodfile: Objects.requireNonNull(folder.listFiles())) {
             String path = foodfile.getPath();
 
-            if (!Files.getFileExtension(path).equalsIgnoreCase("yml")) {
-                // NOT A VALID FILE
-            } else {
-
+            if (Files.getFileExtension(path).equalsIgnoreCase("yml")) {
                 File f = new File(path);
                 FileConfiguration setcache = YamlConfiguration.loadConfiguration(f);
                 if (setcache.contains("Item.Type") && setcache.getString("Item.Type") != null) {
-                    if (Material.getMaterial(setcache.getString("Item.Type").toUpperCase()) == food) {
+                    if (Material.getMaterial(Objects.requireNonNull(setcache.getString("Item.Type")).toUpperCase()) == food) {
                         return f.getName();
                     }
                 }
@@ -212,7 +199,7 @@ public class Utils {
     }
 
     private static List < String > convertListColor(List < String > msg) {
-        ArrayList < String > result = new ArrayList < String > ();
+        ArrayList < String > result = new ArrayList<>();
         for (String msgs: msg) {
             result.add(convertColor(msgs));
         }
@@ -220,8 +207,6 @@ public class Utils {
     }
 
     static void ateItem(Player p, ItemStack i) {
-        File folder = new File(plugin.getDataFolder(), File.separator + "Foods");
-
         if (!folder.exists()) {
             return;
         }
@@ -239,11 +224,13 @@ public class Utils {
             FileConfiguration setfood = YamlConfiguration.loadConfiguration(f);
 
             String itemname = convertColor(setfood.getString("Item.Name"));
-            Material itemtype = Material.getMaterial(setfood.getString("Item.Type").toUpperCase());
+            Material itemtype = Material.getMaterial(Objects.requireNonNull(setfood.getString("Item.Type")).toUpperCase());
             List < String > lore = setfood.getStringList("Item.Lore");
 
+            assert itemtype != null;
             ItemStack item = new ItemStack(itemtype);
             ItemMeta itemm = item.getItemMeta();
+            assert itemm != null;
             itemm.setDisplayName(itemname);
 
             itemm.setLore(convertListColor(lore));

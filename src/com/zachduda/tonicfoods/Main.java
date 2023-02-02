@@ -39,6 +39,7 @@ public class Main extends JavaPlugin implements Listener {
 
         Utils.generateExample();
         Utils.allFilesUppercase();
+        Utils.updateFoodFolder();
 
         updateConfig();
 
@@ -162,6 +163,7 @@ public class Main extends JavaPlugin implements Listener {
                 updateConfig();
                 Utils.generateExample(); // Just in case :)
                 Utils.allFilesUppercase(); // Just gotta double check.
+                Utils.updateFoodFolder(); // update files
 
                 Msgs.send(sender, "&f");
                 Msgs.send(sender, "&a&lT&r&aonic&f&lF&r&food");
@@ -296,24 +298,23 @@ public class Main extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent e) {
-        Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
-            Player p = e.getPlayer();
-            if (update_check) {
-                if (p.hasPermission("puuids.admin") || p.isOp()) {
-                    if (Updater.outdated) {
-                        try {
-                            Msgs.sendP(p, "&c&lOutdated Plugin! &7Running v" + getDescription().getVersion() +
-                                " while the latest is &f&l" + Updater.outdatedversion);
-                        } catch (Exception err) { //Swallowing Errors, yum...
+        try {
+            Bukkit.getScheduler().runTaskAsynchronously(this, () -> {
+                Player p = e.getPlayer();
+                if (update_check) {
+                    if (p.hasPermission("puuids.admin") || p.isOp()) {
+                        if (Updater.outdated) {
+                                Msgs.sendP(p, "&c&lOutdated Plugin! &7Running v" + getDescription().getVersion() +
+                                    " while the latest is &f&l" + Updater.outdatedversion);
                         }
                     }
                 }
-            }
 
-            if (p.getUniqueId().toString().equals("6191ff85-e092-4e9a-94bd-63df409c2079")) {
-                Msgs.send(p, "&7This server is running &fTonicFoods &6v" + getDescription().getVersion() +
-                    " &7for " + Bukkit.getBukkitVersion().replace("-SNAPSHOT", ""));
-            }
-        });
+                if (p.getUniqueId().toString().equals("6191ff85-e092-4e9a-94bd-63df409c2079")) {
+                    Msgs.send(p, "&7This server is running &fTonicFoods &6v" + getDescription().getVersion() +
+                        " &7for " + Bukkit.getBukkitVersion().replace("-SNAPSHOT", ""));
+                }
+            });
+        } catch (Exception ignore) {}
     }
 }
