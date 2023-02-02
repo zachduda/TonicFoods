@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -18,6 +19,7 @@ public class Main extends JavaPlugin implements Listener {
     public TonicFoodsAPI api;
 
     static String prefix = "&8[&aTonicFoods&8]&r";
+    static String header = "&r&a&lT&r&aonic&f&lF&r&foods&r";
     private boolean sounds = true;
     private boolean update_check = true;
     private boolean can_metrics = true;
@@ -27,7 +29,8 @@ public class Main extends JavaPlugin implements Listener {
     private final String version = Bukkit.getBukkitVersion().replace("-SNAPSHOT", "");
 
     private final boolean supported = version.contains("1.16") || version.contains("1.17") || version.contains("1.18") || version.contains("1.19");
-    
+
+    private boolean seen_lengthy_cmd_tip = false;
     public void onEnable() {
     	if (!supported) {
         	Bukkit.getScheduler().runTask(this, () -> getLogger().warning("> This version of TonicFoods may not work for this version of Minecraft. (Supports 1.19 through 1.16)"));
@@ -51,12 +54,10 @@ public class Main extends JavaPlugin implements Listener {
             getLogger().info("Found " + Utils.getFoods().size() + " custom foods.");
         }
 
-        if (getConfig().getBoolean("Settings.Update-Check")) {
+        if (update_check) {
             new Updater(this).checkForUpdate();
-            update_check = true;
         } else {
             getLogger().info("[!] Update Checking was disabled.");
-            update_check = false;
         }
 
         // Metrics to help support me. <3
@@ -68,12 +69,21 @@ public class Main extends JavaPlugin implements Listener {
     }
 
     private void updateConfig() {
+        FileConfiguration c = getConfig();
+        if(c.getInt("Version", 0) != 2) {
+            c.options().copyDefaults(true);
+            saveDefaultConfig();
+            c.set("Version", 2);
+            saveConfig();
+            reloadConfig();
+        }
         prefix = getConfig().getString("Messages.Prefix", "&8[&aTonicFoods&8]&r");
         sounds = getConfig().getBoolean("Settings.Sounds.Enabled", true);
         pop_sound = getConfig().getString("Settings.Sounds.Pop", "ENTITY_CHICKEN_EGG");
         bass_sound = getConfig().getString("Settings.Sounds.Bass", "BLOCK_NOTE_BLOCK_BASS");
-        update_check = getConfig().getBoolean("Settings.Others.Update-Check");
-        can_metrics = getConfig().getBoolean("Settings.Others.Metrics");
+        update_check = getConfig().getBoolean("Settings.Others.Update-Check", true);
+        can_metrics = getConfig().getBoolean("Settings.Others.Metrics", true);
+        header = getConfig().getString("Messages.Header", "&r&a&lT&r&aonic&f&lF&r&foods&r");
     }
 
     private void pop(CommandSender sender) {
@@ -113,14 +123,14 @@ public class Main extends JavaPlugin implements Listener {
                 if (!sender.hasPermission("tonicfoods.give") && !sender.isOp() && !sender.hasPermission("tonicfoods.admin")) {
                     pop(sender);
                     Msgs.send(sender, "&f");
-                    Msgs.send(sender, "&a&lT&r&aonic&f&lF&r&food");
-                    Msgs.send(sender, "&8&l> &7A plugin by &f&lzach_attack &c❤");
+                    Msgs.send(sender, header);
+                    Msgs.send(sender, "   &8&l> &7A plugin by &f&lzach_attack &c❤");
                     Msgs.send(sender, "&f");
                     return true;
                 }
                 Msgs.send(sender, "&f");
-                Msgs.send(sender, "&a&lT&r&aonic&f&lF&r&food");
-                Msgs.send(sender, "&8&l> &7Do command &f&l/tfood help &7for help.");
+                Msgs.send(sender, header);
+                Msgs.send(sender, "&8&l> &7Do command &f&l/" + cmdstring.toLowerCase() + " help &7for help.");
                 Msgs.send(sender, "&f");
                 pop(sender);
                 return true;
@@ -132,21 +142,28 @@ public class Main extends JavaPlugin implements Listener {
                     return true;
                 }
 
+                final String cm = cmdstring.toLowerCase();
+
                 Msgs.send(sender, "&f");
-                Msgs.send(sender, "&a&lT&r&aonic&f&lF&r&food");
-                Msgs.send(sender, "   &8&l> &f&l/tfood help &7Shows this help page.");
-                Msgs.send(sender, "   &8&l> &f&l/tfood reload &7Reloads the configuration.");
-                Msgs.send(sender, "   &8&l> &f&l/tfood version &7Shows your plugin version.");
-                Msgs.send(sender, "   &8&l> &f&l/tfood food &7Shows available food.");
-                Msgs.send(sender, "   &8&l> &f&l/tfood give (user) (food) (amount) &7Gives a user a food item!");
-                Msgs.send(sender, "&f");
+                Msgs.send(sender, header);
+                Msgs.send(sender, "   &8&l> &f&l/" + cm + " help &7Shows this help page.");
+                Msgs.send(sender, "   &8&l> &f&l/" + cm + " reload &7Reloads the configuration.");
+                Msgs.send(sender, "   &8&l> &f&l/" + cm + " version &7Shows your plugin version.");
+                Msgs.send(sender, "   &8&l> &f&l/" + cm + " food &7Shows available food.");
+                Msgs.send(sender, "   &8&l> &f&l/" + cm + " give (user) (food) (amount) &7Gives a user a food item!");
+                if(!seen_lengthy_cmd_tip && cm.equals("tonicfoods")) {
+                    seen_lengthy_cmd_tip = true;
+                    Msgs.send(sender, " ");
+                    Msgs.send(sender, "&7&oTip: It might be easier to use &r&a/tf &7&oinstead of &r&7/tonicfoods");
+                }
+                Msgs.send(sender, " ");
                 pop(sender);
                 return true;
             }
 
             if (args[0].equalsIgnoreCase("version")) {
                 Msgs.send(sender, "&f");
-                Msgs.send(sender, "&a&lT&r&aonic&f&lF&r&food");
+                Msgs.send(sender, header);
                 Msgs.send(sender, "   &8&l> &7You are running &f&lv" + getDescription().getVersion());
                 Msgs.send(sender, "&f");
                 pop(sender);
@@ -166,7 +183,7 @@ public class Main extends JavaPlugin implements Listener {
                 Utils.updateFoodFolder(); // update files
 
                 Msgs.send(sender, "&f");
-                Msgs.send(sender, "&a&lT&r&aonic&f&lF&r&food");
+                Msgs.send(sender, header);
                 Msgs.send(sender, "   &8&l> &7Reloaded the configuration.");
                 Msgs.send(sender, "&f");
                 pop(sender);
@@ -303,9 +320,9 @@ public class Main extends JavaPlugin implements Listener {
                 Player p = e.getPlayer();
                 if (update_check) {
                     if (p.hasPermission("puuids.admin") || p.isOp()) {
-                        if (Updater.outdated) {
+                        if (Updater.isOutdated()) {
                                 Msgs.sendP(p, "&c&lOutdated Plugin! &7Running v" + getDescription().getVersion() +
-                                    " while the latest is &f&l" + Updater.outdatedversion);
+                                    " while the latest is &f&l" + Updater.getPostedVersion());
                         }
                     }
                 }
