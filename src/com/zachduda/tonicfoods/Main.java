@@ -18,8 +18,8 @@ import org.jetbrains.annotations.NotNull;
 public class Main extends JavaPlugin implements Listener {
     public TonicFoodsAPI api;
 
-    static String prefix = "&8[&aTonicFoods&8]&r";
-    static String header = "&r&a&lT&r&aonic&f&lF&r&foods&r";
+    static String prefix = "&8[&r&#b5ffce&lTF&r&8]&r";
+    static String header = "&r&#b5ffce&lTonic Foods&r";
     private boolean sounds = true;
     private boolean update_check = true;
     private boolean can_metrics = true;
@@ -77,13 +77,13 @@ public class Main extends JavaPlugin implements Listener {
             saveConfig();
             reloadConfig();
         }
-        prefix = getConfig().getString("Messages.Prefix", "&8[&aTonicFoods&8]&r");
+        prefix = getConfig().getString("Messages.Prefix", "&8[&r&#b5ffce&lTF&r&8]&r");
         sounds = getConfig().getBoolean("Settings.Sounds.Enabled", true);
         pop_sound = getConfig().getString("Settings.Sounds.Pop", "ENTITY_CHICKEN_EGG");
         bass_sound = getConfig().getString("Settings.Sounds.Bass", "BLOCK_NOTE_BLOCK_BASS");
         update_check = getConfig().getBoolean("Settings.Others.Update-Check", true);
         can_metrics = getConfig().getBoolean("Settings.Others.Metrics", true);
-        header = getConfig().getString("Messages.Header", "&r&a&lT&r&aonic&f&lF&r&foods&r");
+        header = getConfig().getString("Messages.Header", "&r&#b5ffce&lTonic Foods&r");
     }
 
     private void pop(CommandSender sender) {
