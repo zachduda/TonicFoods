@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 public class Main extends JavaPlugin implements Listener {
     public TonicFoodsAPI api;
@@ -117,7 +116,7 @@ public class Main extends JavaPlugin implements Listener {
         Msgs.sendP(sender, getConfig().getString("Messages.No-Permission"));
     }
 
-    public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String cmdstring, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String cmdstring, String[] args) {
         if (command.getName().equalsIgnoreCase("tonicfoods")) {
             if (args.length == 0) {
                 if (!sender.hasPermission("tonicfoods.give") && !sender.isOp() && !sender.hasPermission("tonicfoods.admin")) {
