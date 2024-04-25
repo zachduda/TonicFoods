@@ -27,7 +27,7 @@ public class Main extends JavaPlugin implements Listener {
     
     private final String version = Bukkit.getBukkitVersion().replace("-SNAPSHOT", "");
 
-    private final boolean supported = version.contains("1.16") || version.contains("1.17") || version.contains("1.18") || version.contains("1.19");
+    private final boolean supported = version.contains("1.16") || version.contains("1.17") || version.contains("1.18") || version.contains("1.19") || version.contains("1.20");
 
     private boolean seen_lengthy_cmd_tip = false;
     public void onEnable() {
