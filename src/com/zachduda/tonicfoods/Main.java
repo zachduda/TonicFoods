@@ -27,7 +27,7 @@ public class Main extends JavaPlugin implements Listener {
     
     private final String version = Bukkit.getBukkitVersion().replace("-SNAPSHOT", "");
 
-    private final boolean supported = version.contains("1.16") || version.contains("1.17") || version.contains("1.18") || version.contains("1.19") || version.contains("1.20");
+    private final boolean supported = version.contains("1.16") || version.contains("1.17") || version.contains("1.18") || version.contains("1.19") || version.contains("1.20") || version.contains("1.21");
 
     private boolean seen_lengthy_cmd_tip = false;
     public void onEnable() {
@@ -47,7 +47,7 @@ public class Main extends JavaPlugin implements Listener {
 
         Bukkit.getServer().getPluginManager().registerEvents(this, this);
 
-        if (Utils.getFoods().size() == 0) {
+        if (Utils.getFoods().isEmpty()) {
             getLogger().info("Couldn't find any custom food files! To regenerate the default template for a food file, delete your food folder, and then simply reload the plugin.");
         } else {
             getLogger().info("Found " + Utils.getFoods().size() + " custom foods.");
@@ -197,7 +197,7 @@ public class Main extends JavaPlugin implements Listener {
 
                 Msgs.send(sender, "&f");
 
-                if (Utils.getFoodFileNames().size() == 0) {
+                if (Utils.getFoodFileNames().isEmpty()) {
                     Msgs.send(sender, "&c&lNo Available Food");
                     Msgs.send(sender, "   &8&l> &fIt looks like your food folder is empty...");
                     Msgs.send(sender, "&f");

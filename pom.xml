@@ -9,13 +9,13 @@
     <artifactId>tonicfoods</artifactId>
     <url>https://zachduda.com/resources</url>
     <packaging>jar</packaging>
-    <version>2.0.1</version>
+    <version>3.0.0</version>
     <description>Custom made food with potion effects: made easy!</description>
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <spigot.version>1.21.1-R0.1-SNAPSHOT</spigot.version>
+        <spigot.version>1.21.3-R0.1-SNAPSHOT</spigot.version>
     </properties>
     <licenses>
         <license>
