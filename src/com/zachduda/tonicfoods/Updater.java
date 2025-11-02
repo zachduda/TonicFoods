@@ -53,8 +53,10 @@ public class Updater {
                                 final Boolean prerelease = ((Boolean)jsonObject.get("prerelease"));
                                 if(!prerelease) {
                                     if(!localPluginVersion.equalsIgnoreCase(vs)){
-                                        outdated = true;
-                                        postedver = vs;
+                                        if(!vs.equalsIgnoreCase("2.0")) {
+                                            outdated = true;
+                                            postedver = vs;
+                                        }
                                     }
                                     break;
                                 }
