@@ -4,8 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,15 +43,13 @@ public class Updater {
                             BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
                             String str = br.readLine();
                             JSONArray rawja = (JSONArray) new JSONParser().parse(str);
-                            ArrayList<Double> versions = new ArrayList<Double>();
-                            Iterator iterator = rawja.iterator();
-                            while (iterator.hasNext()) {
-                                JSONObject jsonObject = (JSONObject) iterator.next();
-                                final String vs = ((String)jsonObject.get("tag_name")).replace("v", "");
-                                final Boolean prerelease = ((Boolean)jsonObject.get("prerelease"));
-                                if(!prerelease) {
-                                    if(!localPluginVersion.equalsIgnoreCase(vs)){
-                                        if(!vs.equalsIgnoreCase("2.0")) {
+                            for (Object o : rawja) {
+                                JSONObject jsonObject = (JSONObject) o;
+                                final String vs = ((String) jsonObject.get("tag_name")).replace("v", "");
+                                final Boolean prerelease = ((Boolean) jsonObject.get("prerelease"));
+                                if (!prerelease) {
+                                    if (!localPluginVersion.equalsIgnoreCase(vs)) {
+                                        if (!vs.equalsIgnoreCase("2.0")) {
                                             outdated = true;
                                             postedver = vs;
                                         }
